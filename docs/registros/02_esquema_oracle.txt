@@ -1,0 +1,84 @@
+===================================================================
+ Registro: estado del esquema FORO en Oracle Autonomous Database
+ Microservicio foro-usuarios
+ Fecha: 2026-10-29 13:22:14 -03
+===================================================================
+
+Base de datos
+-------------
+  Nombre BD   : FULLSTACK-3 / FULLSTACK3
+  Tipo        : Oracle Autonomous Database (Always Free)
+  Version     : Oracle AI Database 26ai Enterprise Edition 23.26.4.1.0
+  Region      : Chile Central (Santiago), sa-santiago-1
+  Esquema     : FORO (creado con scripts/00_crear_esquema_foro.sql)
+  Servicio TNS: fullstack3_tp
+  mTLS        : requerido (conexion con Wallet)
+
+Objetos de ESTE microservicio, creados por scripts/01_crear_tablas.sql
+---------------------------------------------------------------------
+  Tablas     : ROL, USUARIO, USUARIO_ROL
+  Secuencias : ROL_SEQ, USUARIO_SEQ
+
+  Las tablas del otro microservicio del foro conviven en el mismo
+  esquema y las crea su propio script. No hay claves foraneas entre
+  los dos grupos de tablas.
+
+Resultado de scripts/consultas_demo.sql
+---------------------------------------
+  Archivo   : consultas_demo.sql
+  Usuario   : FORO
+  Sentencias: 5
+  ----------------------------------------------------------------------
+  OK   SELECT 'ROL' AS TABLA, COUNT(*) AS REGISTROS FROM ROL UNION ...
+        TABLA | REGISTROS
+        ROL | 3
+        USUARIO | 5
+        USUARIO_ROL | 6
+        (3 filas)
+  OK   SELECT u.ID, u.NOMBRE_USUARIO, u.CORREO, CASE u.ACTIVO WHEN ...
+        ID | NOMBRE_USUARIO | CORREO | CUENTA | HASH_BCRYPT | ROLES
+        1 | admin | admin@foro.cl | activa | $2a$10$4No... | ADMIN
+        2 | moderadora | moderadora@foro.cl | activa | $2a$10$VjW... | MODERADOR, USUARIO
+        3 | feliks | feliks@foro.cl | activa | $2a$10$TxG... | USUARIO
+        4 | yiheng | yiheng@foro.cl | activa | $2a$10$Muw... | USUARIO
+        5 | tymon | tymon@foro.cl | de baja | $2a$10$eeg... | USUARIO
+        (5 filas)
+  OK   SELECT r.NOMBRE AS ROL, COUNT(ur.USUARIO_ID) AS USUARIOS FRO...
+        ROL | USUARIOS
+        USUARIO | 4
+        ADMIN | 1
+        MODERADOR | 1
+        (3 filas)
+  OK   SELECT ID, NOMBRE_USUARIO, CORREO, TO_CHAR(FECHA_REGISTRO, '...
+        ID | NOMBRE_USUARIO | CORREO | REGISTRADO
+        5 | tymon | tymon@foro.cl | 29-10-2026 16:21:04
+        4 | yiheng | yiheng@foro.cl | 29-10-2026 16:21:04
+        3 | feliks | feliks@foro.cl | 29-10-2026 16:21:04
+        (3 filas)
+  OK   SELECT COUNT(*) AS TOTAL_USUARIOS, SUM(CASE WHEN CONTRASENA_...
+        TOTAL_USUARIOS | CON_HASH_BCRYPT
+        5 | 5
+        (1 filas)
+  ----------------------------------------------------------------------
+  Todas las sentencias se ejecutaron sin errores.
+
+===================================================================
+ Verificacion de privilegios en vivo (HTTP real, misma sesion)
+===================================================================
+
+  Operacion                                   Rol        HTTP
+  ------------------------------------------  ---------  ----
+  GET  /api/usuarios            sin token     anonimo     401
+  GET  /api/usuarios            con token     USUARIO     403
+  GET  /api/usuarios            con token     ADMIN       200
+  GET  /api/usuarios/3  (propia cuenta)       USUARIO     200
+  GET  /api/usuarios/4  (cuenta ajena)        USUARIO     403
+  POST /api/categorias                        USUARIO     403
+  POST /api/categorias                        ADMIN       201
+  PUT  /api/temas/{ajeno}                     USUARIO     403
+  DELETE /api/temas/{ajeno}                   ADMIN       204
+
+  La diferencia entre 401 y 403 es deliberada: 401 significa que no hay
+  identidad, 403 que la identidad existe pero no alcanza. Conseguirla
+  exigio permitir el despacho interno a /error en la configuracion de
+  seguridad; sin eso, el reenvio llegaba sin sesion y todo salia 401.

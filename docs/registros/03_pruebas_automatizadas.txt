@@ -1,0 +1,17 @@
+===========================================================================
+ Resultado de las pruebas automatizadas  (./scripts/test.sh)
+ Microservicio foro-usuarios
+===========================================================================
+
+Corren sobre H2 en modo Oracle, sin tocar la base real ni necesitar red.
+
+[INFO] Running com.foro.usuarios.repository.UsuarioRepositoryTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.527 s -- in com.foro.usuarios.repository.UsuarioRepositoryTest
+[INFO] Running com.foro.usuarios.ForoUsuariosApplicationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.741 s -- in com.foro.usuarios.ForoUsuariosApplicationTests
+[INFO] Running com.foro.usuarios.controller.UsuarioControllerTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.127 s -- in com.foro.usuarios.controller.UsuarioControllerTest
+[INFO] Running com.foro.usuarios.service.UsuarioServiceImplTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.218 s -- in com.foro.usuarios.service.UsuarioServiceImplTest
+[INFO] Tests run: 34, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
