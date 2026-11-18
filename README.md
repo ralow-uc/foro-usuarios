@@ -25,14 +25,15 @@ encarga de las categorías, los temas y los comentarios.
 >   arquetipo propio [`microservicio-arquetipo`](../microservicio-arquetipo),
 >   que reúne la estructura común de este repositorio y su par.
 > - **Docker**: `Dockerfile` multi-etapa (el mismo del arquetipo). El Wallet se
->   monta al ejecutar; nunca va en la imagen. Despliegue en Play with Docker en
+>   monta al ejecutar o, en Render, se entrega en memoria por variable de
+>   entorno; nunca va en la imagen. Despliegue en Render en
 >   [`../foro-despliegue`](../foro-despliegue).
 > - **CI** (`.github/workflows/ci.yml`): pruebas y `docker build` en cada push o
 >   pull request a `main`.
 > - **Ramas**: Trunk Based Development ([CONTRIBUTING.md](CONTRIBUTING.md)).
 >   `v1.0.0` es la entrega de S2; `v2.0.0`, la de S5.
 > - **Postman**: la colección ahora recorre los tres servicios (00–59) y trae
->   entornos `local` y `docker-cloud`.
+>   entornos `local` y `render` (URL públicas en la nube).
 > - `FORO_CORS_ORIGENES` y `PORT` configurables por variable de entorno.
 
 ---
